@@ -1,7 +1,6 @@
-//use skia_safe::{Color, Data, EncodedImageFormat, Paint, PaintStyle, Path, Surface};
 use skia_safe::gpu::{Context, BackendRenderTarget, SurfaceOrigin};
-use skia_safe::gpu::gl::{FramebufferInfo, Format};
-use skia_safe::{ColorType, Surface, Color};
+use skia_safe::gpu::gl::FramebufferInfo;
+use skia_safe::{ColorType, Surface, Color, Paint};
 use std::convert::TryInto;
 
 use glutin::event::{Event, WindowEvent};
@@ -62,7 +61,6 @@ fn main() {
         None,
         None
     ).unwrap();
-    surface.canvas().clear(Color::WHITE);
 
     el.run(move |event, _, control_flow| {
         println!("{:?}", event);
@@ -80,28 +78,18 @@ fn main() {
                 _ => (),
             },
             Event::RedrawRequested(_) => {
-                //gl.draw_frame([1.0, 0.5, 0.7, 1.0]);
+                {
+                    let canvas = surface.canvas();
+                    let mut paint = Paint::default();
+
+                    canvas.clear(Color::WHITE);
+                    paint.set_color(Color::new(0xffff0000));
+                    canvas.draw_line((0, 0), (100, 100), &paint);
+                }
                 surface.canvas().flush();
                 windowed_context.swap_buffers().unwrap();
             }
             _ => (),
         }
     });
-
-    /*
-    let width = 200;
-    let height = 200;
-    let mut surface = Surface::new_raster_n32_premul((width, height)).expect("no surface!");
-    let path = Path::new();
-    let mut paint = Paint::default();
-    paint.set_color(Color::BLACK);
-    paint.set_anti_alias(true);
-    paint.set_stroke_width(1.0);
-    surface.canvas().clear(Color::WHITE);
-    let image = surface.image_snapshot();
-    let data = image.encode_to_data(EncodedImageFormat::PNG).unwrap();
-    let mut file = File::create("test.png").unwrap();
-    let bytes = data.as_bytes();
-    file.write_all(bytes).unwrap();
-    */
 }
