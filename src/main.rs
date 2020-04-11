@@ -60,6 +60,9 @@ fn main() {
         None
     ).unwrap();
 
+    let sf = windowed_context.window().scale_factor() as f32;
+    surface.canvas().scale((sf, sf));
+
     let mut x = 0;
     let mut y = 0;
 
