@@ -3,7 +3,7 @@ use skia_safe::gpu::gl::FramebufferInfo;
 use skia_safe::{ColorType, Surface, Color, Paint};
 use std::convert::TryInto;
 
-use glutin::event::{Event, WindowEvent};
+use glutin::event::{Event, WindowEvent, KeyboardInput};
 use glutin::event_loop::{ControlFlow, EventLoop};
 use glutin::window::WindowBuilder;
 use glutin::{ContextBuilder, GlProfile};
@@ -11,12 +11,9 @@ use glutin::{ContextBuilder, GlProfile};
 extern crate gl;
 use gl::types::*;
 
-
-
 fn main() {
-
     let el = EventLoop::new();
-    let wb = WindowBuilder::new().with_title("A fantastic window!");
+    let wb = WindowBuilder::new().with_title("rust-skia-game-test");
 
     let cb = ContextBuilder::new()
         .with_depth_buffer(0)
@@ -26,6 +23,7 @@ fn main() {
         .with_gl_profile(GlProfile::Core)
         //.with_srgb(false)
         ;
+
     let windowed_context =
         cb.build_windowed(wb, &el).unwrap();
 
@@ -62,8 +60,11 @@ fn main() {
         None
     ).unwrap();
 
+    let mut x = 0;
+    let mut y = 0;
+
     el.run(move |event, _, control_flow| {
-        println!("{:?}", event);
+        //println!("{:?}", event);
         *control_flow = ControlFlow::Wait;
 
         match event {
@@ -75,16 +76,22 @@ fn main() {
                 WindowEvent::CloseRequested => {
                     *control_flow = ControlFlow::Exit
                 }
+                WindowEvent::KeyboardInput { input: KeyboardInput { scancode, state, virtual_keycode, modifiers, .. }, .. } => {
+                    println!("KBI");
+                    x = x + 1;
+                    windowed_context.window().request_redraw();
+                }
                 _ => (),
             },
             Event::RedrawRequested(_) => {
+                println!("redraw");
                 {
                     let canvas = surface.canvas();
                     let mut paint = Paint::default();
 
                     canvas.clear(Color::WHITE);
                     paint.set_color(Color::new(0xffff0000));
-                    canvas.draw_line((0, 0), (100, 100), &paint);
+                    canvas.draw_line((x + 0, 0), (x + 100, 100), &paint);
                 }
                 surface.canvas().flush();
                 windowed_context.swap_buffers().unwrap();
