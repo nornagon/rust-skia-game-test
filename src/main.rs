@@ -3,7 +3,7 @@ use skia_safe::gpu::gl::FramebufferInfo;
 use skia_safe::{ColorType, Surface, Color, Paint};
 use std::convert::TryInto;
 
-use glutin::event::{Event, WindowEvent, KeyboardInput};
+use glutin::event::{Event, WindowEvent, KeyboardInput, VirtualKeyCode};
 use glutin::event_loop::{ControlFlow, EventLoop};
 use glutin::window::WindowBuilder;
 use glutin::{ContextBuilder, GlProfile};
@@ -77,7 +77,15 @@ fn main() {
                     *control_flow = ControlFlow::Exit
                 }
                 WindowEvent::KeyboardInput { input: KeyboardInput { scancode, state, virtual_keycode, modifiers, .. }, .. } => {
-                    println!("KBI");
+                    println!("KBI, {:?} (mods: {:?})", virtual_keycode, modifiers);
+                    if modifiers.logo() {
+                        match virtual_keycode {
+                            Some(VirtualKeyCode::Q) => {
+                                *control_flow = ControlFlow::Exit
+                            },
+                            _ => (),
+                        }
+                    }
                     x = x + 1;
                     windowed_context.window().request_redraw();
                 }
