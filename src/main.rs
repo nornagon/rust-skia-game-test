@@ -32,7 +32,7 @@ fn main() {
 
     println!("Pixel format of the window's GL context: {:?}", pixel_format);
 
-    gl::load_with(|s| windowed_context.get_proc_address(&s) as *const _);
+    gl::load_with(|s| windowed_context.get_proc_address(&s));
 
     let mut gr_context = Context::new_gl(None).unwrap();
 
@@ -67,7 +67,6 @@ fn main() {
     let mut y = 0;
 
     el.run(move |event, _, control_flow| {
-        //println!("{:?}", event);
         *control_flow = ControlFlow::Wait;
 
         match event {
@@ -80,7 +79,6 @@ fn main() {
                     *control_flow = ControlFlow::Exit
                 }
                 WindowEvent::KeyboardInput { input: KeyboardInput { scancode, state, virtual_keycode, modifiers, .. }, .. } => {
-                    println!("KBI, {:?} (mods: {:?})", virtual_keycode, modifiers);
                     if modifiers.logo() {
                         match virtual_keycode {
                             Some(VirtualKeyCode::Q) => {
@@ -95,7 +93,6 @@ fn main() {
                 _ => (),
             },
             Event::RedrawRequested(_) => {
-                println!("redraw");
                 {
                     let canvas = surface.canvas();
                     let mut paint = Paint::default();
