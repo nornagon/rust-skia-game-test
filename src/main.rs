@@ -1,4 +1,4 @@
-use skia_safe::gpu::{Context, BackendRenderTarget, SurfaceOrigin};
+use skia_safe::gpu::{DirectContext, BackendRenderTarget, SurfaceOrigin};
 use skia_safe::gpu::gl::FramebufferInfo;
 use skia_safe::{ColorType, Surface, Color, Paint};
 use std::convert::TryInto;
@@ -34,13 +34,13 @@ fn main() {
 
     gl::load_with(|s| windowed_context.get_proc_address(&s));
 
-    let mut gr_context = Context::new_gl(None).unwrap();
+    let mut gr_context = DirectContext::new_gl(None, None).unwrap();
 
-    let mut fboid: GLint = 0;
-    unsafe { gl::GetIntegerv(gl::FRAMEBUFFER_BINDING, &mut fboid) };
+    let mut fbo_id: GLint = 0;
+    unsafe { gl::GetIntegerv(gl::FRAMEBUFFER_BINDING, &mut fbo_id) };
 
     let fb_info = FramebufferInfo {
-        fboid: fboid.try_into().unwrap(),
+        fboid: fbo_id.try_into().unwrap(),
         format: 0x8058 /* GR_GL_RGBA8, see https://github.com/rust-skia/rust-skia/issues/311 */,
     };
 

@@ -5,7 +5,7 @@ authors = ["Jeremy Apthorp <nornagon@nornagon.net>"]
 edition = "2018"
 
 [dependencies]
-glutin = "0.24"
+glutin = "0.29"
 gl = "0.14.0"
 
 [dependencies.skia-safe]
